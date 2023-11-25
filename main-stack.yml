@@ -1,4 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
+
 Resources:
   VPCStack:
     Type: "AWS::CloudFormation::Stack"
@@ -15,7 +16,12 @@ Resources:
     Properties:
       TemplateURL: "https://pkatu-bucket-01.s3.eu-north-1.amazonaws.com/ec2-stack.yml"
 
+  AutoScalingStack:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: "https://pkatu-bucket-01.s3.eu-north-1.amazonaws.com/autoscaling-stack.yml"
+
   ELBStack:
     Type: "AWS::CloudFormation::Stack"
     Properties:
-      TemplateURL: "https://pkatu-bucket-01.s3.eu-north-1.amazonaws.com/elb-stack.yml"
+      TemplateURL: "https://pkatu-bucket-01.s3.eu-north-1.amazonaws.com/load-balancer-stack.yml"
