@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  VPCID:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC ID where the load balancer will be deployed.
+  Subnets:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: The list of Subnet IDs for the Load Balancer.
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup::Id
+    Description: Security Group ID for the Load Balancer.
+
+Resources:
+  MyLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: MyApplicationLoadBalancer
+      Subnets: !Ref Subnets
+      SecurityGroups:
+        - !Ref SecurityGroup
+      Scheme: internet-facing
+      Type: application
+
+  MyListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref MyTargetGroup
+      LoadBalancerArn: !Ref MyLoadBalancer
+      Port: 80
+      Protocol: HTTP
+
+  MyTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      VpcId: !Ref VPCID
+      Port: 80
+      Protocol: HTTP
+      TargetType: instance
+
+Outputs:
+  LoadBalancerARN:
+    Description: "ARN of the Load Balancer"
+    Value: !Ref MyLoadBalancer
+  LoadBalancerDNSName:
+    Description: "DNS Name of the Load Balancer"
+    Value: !GetAtt MyLoadBalancer.DNSName
+  ListenerARN:
+    Description: "ARN of the Listener"
+    Value: !Ref MyListener
+  TargetGroupARN:
+    Description: "ARN of the Target Group"
+    Value: !Ref MyTargetGroup
