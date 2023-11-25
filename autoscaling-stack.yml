@@ -29,7 +29,7 @@ Resources:
       InstanceType: !Ref InstanceType
       KeyName: !Ref KeyName
       SecurityGroups:
-        - !Ref SecurityGroup
+        - !ImportValue EC2Stack:AppSecurityGroupId
 
   MyAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup

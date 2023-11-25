@@ -100,6 +100,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
+          SourceSecurityGroupId: !Ref JumpBoxSecurityGroup
           CidrIp: 0.0.0.0/0
         - IpProtocol: tcp
           FromPort: 443
@@ -109,8 +110,12 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Security group for application server
-      VpcId: VPCID
-      SecurityGroupIngress: null
+      VpcId: !Ref VPCID
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: [App-specific port]
+          ToPort: [App-specific port]
+          SourceSecurityGroupId: !Ref JumpBoxSecurityGroup
   DatabaseSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -123,18 +128,26 @@ Resources:
           SourceSecurityGroupId: AppSecurityGroup
 
 Outputs:
-  JumpBoxInstanceId:
-    Description: "Jump Box EC2 Instance ID"
-    Value: !Ref JumpBoxInstance
+  JumpBoxSecurityGroupId:
+    Description: "The Security Group ID for the Jump Box"
+    Value: !Ref JumpBoxSecurityGroup
+    Export:
+      Name: EC2Stack:JumpBoxSecurityGroupId
 
-  FrontendInstanceId:
-    Description: "Frontend EC2 Instance ID"
-    Value: !Ref FrontendInstance
+  FrontendSecurityGroupId:
+    Description: "The Security Group ID for the Frontend"
+    Value: !Ref FrontendSecurityGroup
+    Export:
+      Name: EC2Stack:FrontendSecurityGroupId
 
-  AppInstanceId:
-    Description: "Application EC2 Instance ID"
-    Value: !Ref AppInstance
+  AppSecurityGroupId:
+    Description: "The Security Group ID for the Application"
+    Value: !Ref AppSecurityGroup
+    Export:
+      Name: EC2Stack:AppSecurityGroupId
 
-  DatabaseInstanceId:
-    Description: "Database EC2 Instance ID"
-    Value: !Ref DatabaseInstance
+  DatabaseSecurityGroupId:
+    Description: "The Security Group ID for the Database"
+    Value: !Ref DatabaseSecurityGroup
+    Export:
+      Name: EC2Stack:DatabaseSecurityGroupId

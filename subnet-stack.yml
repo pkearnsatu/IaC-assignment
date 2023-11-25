@@ -28,3 +28,27 @@ Resources:
       VpcId: !ImportValue VPCStack:VPCID
       CidrBlock: "10.0.4.0/24"
       AvailabilityZone: !Select [1, !GetAZs ""]
+Outputs:
+  PublicSubnetID:
+    Description: "ID of the Public Subnet"
+    Value: !Ref PublicSubnet
+    Export:
+      Name: SubnetStack:PublicSubnetID
+
+  PrivateSubnet1ID:
+    Description: "ID of the first Private Subnet"
+    Value: !Ref PrivateSubnet1
+    Export:
+      Name: SubnetStack:PrivateSubnet1ID
+
+  PrivateSubnet2ID:
+    Description: "ID of the second Private Subnet"
+    Value: !Ref PrivateSubnet2
+    Export:
+      Name: SubnetStack:PrivateSubnet2ID
+
+  PrivateSubnet3ID:
+    Description: "ID of the third Private Subnet"
+    Value: !Ref PrivateSubnet3
+    Export:
+      Name: SubnetStack:PrivateSubnet3ID

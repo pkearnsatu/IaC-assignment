@@ -16,7 +16,8 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Name: MyApplicationLoadBalancer
-      Subnets: !Ref Subnets
+      Subnets:
+        - !ImportValue SubnetStack:PublicSubnetID
       SecurityGroups:
         - !Ref SecurityGroup
       Scheme: internet-facing
@@ -35,7 +36,7 @@ Resources:
   MyTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      VpcId: !Ref VPCID
+      VpcId: !ImportValue VPCStack:VPCID
       Port: 80
       Protocol: HTTP
       TargetType: instance
