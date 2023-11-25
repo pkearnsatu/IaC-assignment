@@ -4,18 +4,26 @@ Parameters:
   VPCID:
     Type: String
     Description: VPC ID where instances will be deployed.
+    Default: !ImportValue VPCStack:VPCID
   PublicSubnetID:
     Type: String
     Description: Public Subnet ID for the Jump Box.
+    Default: !ImportValue SubnetStack:PublicSubnetID
   PrivateSubnet1ID:
     Type: String
     Description: First Private Subnet ID for the Front-facing Website.
+    Default: !ImportValue SubnetStack:PrivateSubnet1ID
   PrivateSubnet2ID:
     Type: String
     Description: Second Private Subnet ID for the App Instance.
+    Default: !ImportValue SubnetStack:PrivateSubnet2ID
   PrivateSubnet3ID:
     Type: String
     Description: Third Private Subnet ID for the Database Instance.
+    PrivateSubnet3ID:
+    Type: AWS::EC2::Subnet::Id
+    Description: Third Private Subnet ID for the Database Instance.
+    Default: !ImportValue SubnetStack:PrivateSubnet3ID
   KeyName:
     Type: AWS::EC2::KeyPair::KeyName
     Description: Name of an existing EC2 KeyPair to enable SSH access.

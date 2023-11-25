@@ -20,6 +20,7 @@ Parameters:
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup::Id
     Description: Security Group ID for the Auto Scaling Group instances.
+    Default: !ImportValue EC2Stack:AppSecurityGroupId
 
 Resources:
   MyLaunchConfiguration:
