@@ -21,3 +21,10 @@ Resources:
       VpcId: !ImportValue VPCStack:VPCID
       CidrBlock: "10.0.3.0/24"
       AvailabilityZone: !Select [1, !GetAZs ""]
+
+  PrivateSubnet3:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !ImportValue VPCStack:VPCID
+      CidrBlock: "10.0.4.0/24"
+      AvailabilityZone: !Select [1, !GetAZs ""]

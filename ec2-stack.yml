@@ -1,0 +1,140 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  VPCID:
+    Type: String
+    Description: VPC ID where instances will be deployed.
+  PublicSubnetID:
+    Type: String
+    Description: Public Subnet ID for the Jump Box.
+  PrivateSubnet1ID:
+    Type: String
+    Description: First Private Subnet ID for the Front-facing Website.
+  PrivateSubnet2ID:
+    Type: String
+    Description: Second Private Subnet ID for the App Instance.
+  PrivateSubnet3ID:
+    Type: String
+    Description: Third Private Subnet ID for the Database Instance.
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Name of an existing EC2 KeyPair to enable SSH access.
+  ImageId:
+    Type: AWS::EC2::Image::Id
+    Description: The AMI ID for the EC2 instances.
+  InstanceType:
+    Type: String
+    Default: t2.micro
+    Description: EC2 instance type.
+
+Resources:
+  JumpBoxInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      ImageId: !Ref ImageId
+      KeyName: !Ref KeyName
+      SubnetId: !Ref PublicSubnetID
+      SecurityGroupIds:
+        - !Ref JumpBoxSecurityGroup
+
+  FrontendInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      ImageId: !Ref ImageId
+      KeyName: !Ref KeyName
+      SubnetId: !Ref PrivateSubnet1ID
+      SecurityGroupIds:
+        - !Ref FrontendSecurityGroup
+
+  AppInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      ImageId: !Ref ImageId
+      KeyName: !Ref KeyName
+      SubnetId: !Ref PrivateSubnet2ID
+      SecurityGroupIds:
+        - !Ref AppSecurityGroup
+
+  DatabaseInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      ImageId: !Ref ImageId
+      KeyName: !Ref KeyName
+      SubnetId: !Ref PrivateSubnet3ID
+      SecurityGroupIds:
+        - !Ref DatabaseSecurityGroup
+
+  JumpBoxSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for jump box with SSH access
+      VpcId: VPCID
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: "-1"
+          FromPort: "-1"
+          ToPort: "-1"
+          DestinationSecurityGroupId: !Ref FrontendSecurityGroup
+        - IpProtocol: "-1"
+          FromPort: "-1"
+          ToPort: "-1"
+          DestinationSecurityGroupId: !Ref AppSecurityGroup
+        - IpProtocol: "-1"
+          FromPort: "-1"
+          ToPort: "-1"
+          DestinationSecurityGroupId: !Ref DatabaseSecurityGroup
+  FrontendSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for front-facing web server
+      VpcId: VPCID
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+  AppSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for application server
+      VpcId: VPCID
+      SecurityGroupIngress: null
+  DatabaseSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for database instance
+      VpcId: VPCID
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306 #mysql
+          ToPort: 3306
+          SourceSecurityGroupId: AppSecurityGroup
+
+Outputs:
+  JumpBoxInstanceId:
+    Description: "Jump Box EC2 Instance ID"
+    Value: !Ref JumpBoxInstance
+
+  FrontendInstanceId:
+    Description: "Frontend EC2 Instance ID"
+    Value: !Ref FrontendInstance
+
+  AppInstanceId:
+    Description: "Application EC2 Instance ID"
+    Value: !Ref AppInstance
+
+  DatabaseInstanceId:
+    Description: "Database EC2 Instance ID"
+    Value: !Ref DatabaseInstance

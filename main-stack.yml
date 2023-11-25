@@ -3,19 +3,19 @@ Resources:
   VPCStack:
     Type: "AWS::CloudFormation::Stack"
     Properties:
-      TemplateURL: "https://pkatu-bucket-01.s3.amazonaws.com/vpc-stack.yaml"
+      TemplateURL: "https://pkatu-bucket-01.s3.eu-north-1.amazonaws.com/vpc-stack.yml"
 
   SubnetStack:
     Type: "AWS::CloudFormation::Stack"
     Properties:
-      TemplateURL: "https://pkatu-bucket-01.s3.amazonaws.com/subnet-stack.yaml"
+      TemplateURL: "https://pkatu-bucket-01.s3.eu-north-1.amazonaws.com/subnet-stack.yml"
 
   EC2Stack:
     Type: "AWS::CloudFormation::Stack"
     Properties:
-      TemplateURL: "https://pkatu-bucket-01.s3.amazonaws.com/ec2-stack.yaml"
+      TemplateURL: "https://pkatu-bucket-01.s3.eu-north-1.amazonaws.com/ec2-stack.yml"
 
   ELBStack:
     Type: "AWS::CloudFormation::Stack"
     Properties:
-      TemplateURL: "https://pkatu-bucket-01.s3.amazonaws.com/elb-stack.yaml"
+      TemplateURL: "https://pkatu-bucket-01.s3.eu-north-1.amazonaws.com/elb-stack.yml"

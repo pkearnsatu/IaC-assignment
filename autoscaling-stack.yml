@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  ImageId:
+    Type: AWS::EC2::Image::Id
+    Description: The AMI ID for the EC2 instances.
+  InstanceType:
+    Type: String
+    Default: t2.micro
+    Description: EC2 instance type.
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Name of an existing EC2 KeyPair to enable SSH access.
+  VPCZoneIdentifier:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: The list of Subnet IDs for the Auto Scaling Group.
+  TargetGroupARNs:
+    Type: List<String>
+    Description: The list of Target Group ARNs for the Auto Scaling Group.
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup::Id
+    Description: Security Group ID for the Auto Scaling Group instances.
+
+Resources:
+  MyLaunchConfiguration:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      ImageId: !Ref ImageId
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyName
+      SecurityGroups:
+        - !Ref SecurityGroup
+
+  MyAutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      LaunchConfigurationName: !Ref MyLaunchConfiguration
+      MinSize: "1"
+      MaxSize: "5"
+      VPCZoneIdentifier: !Ref VPCZoneIdentifier
+      TargetGroupARNs: !Ref TargetGroupARNs
+      Tags:
+        - Key: Name
+          Value: MyInstance
+          PropagateAtLaunch: true
+
+Outputs:
+  AutoScalingGroupName:
+    Description: "The name of the Auto Scaling Group"
+    Value: !Ref MyAutoScalingGroup
