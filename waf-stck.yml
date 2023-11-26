@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  MyWebACL:
+    Type: AWS::WAFv2::WebACL
+    Properties:
+      DefaultAction:
+        Allow: {}
+      Scope: "REGIONAL"
+      VisibilityConfig:
+        SampledRequestsEnabled: true
+        CloudWatchMetricsEnabled: true
+        MetricName: MyWebACLMetric
+      Rules:
+        - Name: SQLInjectionRule
+          Priority: 1
+          Action:
+            Block: {}
+          Statement:
+            SqliMatchStatement:
+              FieldToMatch:
+                AllQueryArguments: {}
+              TextTransformation:
+                - Priority: 0
+                  Type: URL_DECODE
+                - Priority: 1
+                  Type: COMPRESS_WHITE_SPACE
