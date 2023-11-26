@@ -2,6 +2,7 @@ AWSTemplateFormatVersion: "2010-09-09"
 Resources:
   PublicSubnet:
     Type: "AWS::EC2::Subnet"
+    DependsOn: VPCStack
     Properties:
       VpcId: !ImportValue VPCStack:VPCID
       CidrBlock: "10.0.1.0/24"
@@ -10,6 +11,7 @@ Resources:
 
   PrivateSubnet1:
     Type: "AWS::EC2::Subnet"
+    DependsOn: VPCStack
     Properties:
       VpcId: !ImportValue VPCStack:VPCID
       CidrBlock: "10.0.2.0/24"
@@ -17,6 +19,7 @@ Resources:
 
   PrivateSubnet2:
     Type: "AWS::EC2::Subnet"
+    DependsOn: VPCStack
     Properties:
       VpcId: !ImportValue VPCStack:VPCID
       CidrBlock: "10.0.3.0/24"
@@ -24,6 +27,7 @@ Resources:
 
   PrivateSubnet3:
     Type: "AWS::EC2::Subnet"
+    DependsOn: VPCStack
     Properties:
       VpcId: !ImportValue VPCStack:VPCID
       CidrBlock: "10.0.4.0/24"

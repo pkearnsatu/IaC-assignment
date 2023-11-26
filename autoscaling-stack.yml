@@ -13,24 +13,23 @@ Parameters:
     Description: Name of an existing EC2 KeyPair to enable SSH access.
   VPCZoneIdentifier:
     Type: List<AWS::EC2::Subnet::Id>
-    Description: The list of Subnet IDs for the Auto Scaling Group.
+    Description: The list of Subnet IDs for the Auto Scaling Group. Get these from the Subnet Stack.
   TargetGroupARNs:
     Type: List<String>
-    Description: The list of Target Group ARNs for the Auto Scaling Group.
+    Description: The list of Target Group ARNs for the Auto Scaling Group. Get these from the ELB Stack.
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup::Id
-    Description: Security Group ID for the Auto Scaling Group instances.
-    Default: !ImportValue EC2Stack:AppSecurityGroupId
+    Description: Security Group ID for the Auto Scaling Group instances. Get this from the EC2 Stack.
 
 Resources:
   MyLaunchConfiguration:
-    Type: AWS::AutoScaling::LaunchConfiguration
-    Properties:
-      ImageId: !Ref ImageId
-      InstanceType: !Ref InstanceType
-      KeyName: !Ref KeyName
-      SecurityGroups:
-        - !ImportValue EC2Stack:AppSecurityGroupId
+  Type: AWS::AutoScaling::LaunchConfiguration
+  Properties:
+    ImageId: !Ref ImageId
+    InstanceType: !Ref InstanceType
+    KeyName: !Ref KeyName
+    SecurityGroups:
+      - !ImportValue EC2Stack:AppSecurityGroupId
 
   MyAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
@@ -38,7 +37,8 @@ Resources:
       LaunchConfigurationName: !Ref MyLaunchConfiguration
       MinSize: "1"
       MaxSize: "5"
-      VPCZoneIdentifier: !Ref VPCZoneIdentifier
+      VPCZoneIdentifier:
+        - !Split [",", !ImportValue SubnetStack:SubnetIDs]
       TargetGroupARNs: !Ref TargetGroupARNs
       Tags:
         - Key: Name
